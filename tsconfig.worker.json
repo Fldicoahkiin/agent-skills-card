@@ -1,0 +1,11 @@
+{
+  // Worker 侧(Hono app + 取数):用 workerd 类型而非 DOM,避免环境不匹配被掩盖。
+  // render 是纯字符串拼装、无 DOM 依赖,两端共用。
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "lib": ["ES2023"],
+    "types": ["@cloudflare/workers-types"]
+  },
+  "include": ["src/worker", "src/server", "src/render", "api"],
+  "exclude": ["src/render/__tests__"]
+}

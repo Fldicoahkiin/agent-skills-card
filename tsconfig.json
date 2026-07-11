@@ -1,0 +1,10 @@
+{
+  // 浏览器侧(配置站 + 同构 render):DOM 库。Worker 侧见 tsconfig.worker.json。
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "jsx": "react-jsx"
+  },
+  "include": ["src", "vite.config.ts", "vitest.config.ts"],
+  "exclude": ["src/worker", "src/server"]
+}

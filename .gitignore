@@ -1,0 +1,13 @@
+node_modules
+dist
+.vercel
+.wrangler
+.playwright-mcp
+*.local
+.DS_Store
+.dev.vars
+
+# installed agent skills (tooling, not project source)
+.agents/
+.claude/skills/
+skills-lock.json

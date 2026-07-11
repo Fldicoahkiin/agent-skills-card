@@ -1,0 +1,126 @@
+@import "tailwindcss";
+
+/* Site design tokens: neo-brutalist dual theme (raft DNA) — ink borders, hard offset shadows,
+   candy accents on cream/white. Same token names; dark switches via html[data-theme="dark"]. */
+@theme {
+  --font-sans: "Space Grotesk", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+
+@theme inline {
+  --color-page: var(--page-bg);
+  --color-panel: var(--panel-bg);
+  --color-line: var(--line);
+  --color-ink: var(--ink);
+  --color-sub: var(--sub);
+  --color-faint: var(--faint);
+  --color-field: var(--field-bg);
+  --color-chip: var(--chip-bg);
+  --color-chip-x: var(--chip-x);
+  --color-seg: var(--seg-bg);
+  --color-board: var(--board-bg);
+  --color-board-dot: var(--board-dot);
+  --color-btn: var(--btn-bg);
+  --color-btn-fg: var(--btn-fg);
+  --color-toast: var(--toast-bg);
+  --color-toast-fg: var(--toast-fg);
+  --color-tile: var(--tile-bg);
+  --color-tile-line: var(--tile-line);
+  --color-tile-active: var(--tile-active);
+  --color-track: var(--track-off);
+  /* Candy accents (raft palette), theme-invariant — always paired with #141111 ink text */
+  --color-pink: #fe7da8;
+  --color-yellow: #ffd440;
+  --color-cyan: #27ccf3;
+  --color-lime: #a9d877;
+}
+
+:root {
+  --page-bg: #fffaef;
+  --panel-bg: #ffffff;
+  --line: #141111;
+  --ink: #141111;
+  /* Warm stone grays, ≥4.5:1 for small text on panel/chip/field grounds */
+  --sub: #57534d;
+  --faint: #6d675f;
+  --field-bg: #ffffff;
+  --chip-bg: #fffaef;
+  --chip-x: #ffd440;
+  --seg-bg: #fffaef;
+  --board-bg: #fff6e0;
+  --board-dot: #d9d2bf;
+  --btn-bg: #141111;
+  --btn-fg: #fffaef;
+  --toast-bg: #141111;
+  --toast-fg: #fffaef;
+  --tile-bg: #ffffff;
+  --tile-line: #141111;
+  --tile-active: #ffd440;
+  --track-off: #e5ded0;
+  /* Hard offset shadows draw in this color (paper-cutout stack) */
+  --hard: #141111;
+}
+
+html[data-theme="dark"] {
+  --page-bg: #171412;
+  --panel-bg: #201d1a;
+  --line: #f2ede2;
+  --ink: #f2ede2;
+  --sub: #b5afa2;
+  --faint: #9a927e;
+  --field-bg: #171412;
+  --chip-bg: #171412;
+  --chip-x: #ffd440;
+  --seg-bg: #171412;
+  --board-bg: #131110;
+  --board-dot: #35312a;
+  --btn-bg: #f2ede2;
+  --btn-fg: #141111;
+  --toast-bg: #f2ede2;
+  --toast-fg: #141111;
+  --tile-bg: #201d1a;
+  --tile-line: #f2ede2;
+  --tile-active: #ffd440;
+  --track-off: #3f3a32;
+  --hard: #000000;
+}
+
+* {
+  border-color: var(--line);
+}
+
+body {
+  margin: 0;
+  background: var(--page-bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+input::placeholder {
+  color: var(--faint);
+}
+
+/* Hard offset shadows, zero blur. panel-shadow = big surfaces; hard-sm = buttons/chips.
+   press-sm pairs with hard-sm: hover lifts and grows the shadow, active pushes into the page. */
+.panel-shadow {
+  box-shadow: 6px 6px 0 var(--hard);
+}
+.hard-sm {
+  box-shadow: 2px 2px 0 var(--hard);
+}
+.press-sm {
+  transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.15s, color 0.15s, border-color 0.15s;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .press-sm:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 3px 3px 0 var(--hard);
+  }
+  .press-sm:active {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0 var(--hard);
+  }
+}
