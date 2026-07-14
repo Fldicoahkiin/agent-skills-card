@@ -1,13 +1,17 @@
 import type { Template } from "../types";
 import { escapeXml, truncateToWidth, truncateMono } from "../svg";
 import { buildInstall } from "../skill";
-import { cardShell, diamond, installChip, countPill, measureFs, shortName } from "../parts";
+import { cardShell, installChip, countPill, measureFs, shortName } from "../parts";
 
-// Variant List: 495 half width, dense single-line rows. Header = title + count pill; row = diamond + short name + command chip on the right.
-// Compact half-width, dense rows. No footer credit line (half width is precious).
-const W = 495;
-const PX = 20;
-const ROW_H = 33;
+// Variant List: 410 compact — two pair side by side in a ~846px README column. Header = title + count pill;
+// each skill stacks a bold short name over a full-width command chip (the chip gets the whole width so long
+// commands stay readable at this size). No footer credit line — space is precious.
+const W = 400;
+const PX = 18;
+const ROW_TOP = 9;
+const NAME_H = 17;
+const CHIP_GAP = 6;
+const CHIP_H = 23;
 
 export const list: Template = {
   key: "list",
@@ -15,42 +19,34 @@ export const list: Template = {
     const t = ctx.tokens;
     const title = config.title || "My Agent Skills";
     const innerW = W - PX * 2;
+    const rowH = ROW_TOP + NAME_H + (config.showInstall ? CHIP_GAP + CHIP_H : 0) + 9;
 
-    const headH = 18 + 22 + 10;
-    const rowsH = config.skills.length * ROW_H;
-    const cardH = headH + rowsH + 16;
+    const headH = 16 + 22 + 8;
+    const cardH = headH + config.skills.length * rowH + 14;
 
     const shell = cardShell(t, W, cardH, t.radiusSm);
     const parts: string[] = [shell.svg];
 
     // Header: title + count pill.
-    const headCy = 18 + 11;
+    const headCy = 16 + 11;
     const pill = countPill(t, String(config.skills.length), W - PX, headCy, 11);
     parts.push(pill.svg);
     parts.push(
       `<text x="${PX}" y="${(headCy + 16 * 0.34).toFixed(1)}" font-family="${t.font}" font-size="16" font-weight="700" fill="${t.ink}">${escapeXml(truncateToWidth(title, measureFs(t, 16), innerW - pill.w - 12))}</text>`,
     );
 
-    // Rows (each wrapped in an <a>: clickable to its repo when the SVG is opened directly; static and harmless behind camo in a README)
+    // Rows (each wrapped in an <a>: clickable to its repo when the SVG is opened directly; static behind camo in a README)
     let y = headH;
     for (const s of config.skills) {
-      parts.push(`<line x1="${PX - 6}" y1="${y.toFixed(1)}" x2="${W - PX + 6}" y2="${y.toFixed(1)}" stroke="${t.divider}" stroke-width="1"/>`);
-      const cy = y + ROW_H / 2;
-      const row: string[] = [diamond(t, PX + 3, cy, 6)];
-      let nameMax = innerW - 15;
+      parts.push(`<line x1="${PX - 4}" y1="${y.toFixed(1)}" x2="${W - PX + 4}" y2="${y.toFixed(1)}" stroke="${t.divider}" stroke-width="1"/>`);
+      const row: string[] = [
+        `<text x="${PX}" y="${(y + ROW_TOP + 13).toFixed(1)}" font-family="${t.mono}" font-size="13" font-weight="600" fill="${t.ink}">${escapeXml(truncateMono(shortName(s.repo), 13, innerW))}</text>`,
+      ];
       if (config.showInstall) {
-        const cmd = buildInstall(config.installTemplate, s.repo);
-        const chip = installChip(t, cmd, 0, 0, innerW * 0.62, 10, 23);
-        // Chip hugs the right; measure first, then place (installChip sizes to content).
-        const chipX = W - PX - chip.w;
-        row.push(installChip(t, cmd, chipX, cy - 11.5, innerW * 0.62, 10, 23).svg);
-        nameMax = chipX - (PX + 15) - 9;
+        row.push(installChip(t, buildInstall(config.installTemplate, s.repo), PX, y + ROW_TOP + NAME_H + CHIP_GAP, innerW, 10, CHIP_H).svg);
       }
-      row.push(
-        `<text x="${PX + 15}" y="${(cy + 12.5 * 0.34).toFixed(1)}" font-family="${t.mono}" font-size="12.5" font-weight="600" fill="${t.ink}">${escapeXml(truncateMono(shortName(s.repo), 12.5, nameMax))}</text>`,
-      );
       parts.push(`<a href="https://github.com/${escapeXml(s.repo)}" target="_blank">${row.join("")}</a>`);
-      y += ROW_H;
+      y += rowH;
     }
 
     return { width: shell.totalW, height: shell.totalH, body: parts.join(""), defs: shell.defs };

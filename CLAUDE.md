@@ -25,8 +25,9 @@ descriptions fetched from GitHub in real time. UI, layouts, and styles follow th
 - Server: one Hono app deployed to Cloudflare Workers or Vercel Edge (see Deploy).
 
 ## Output (design draft)
-- Four `variant`s, all single-image: `full` (830 full width: eyebrow + title / big skills count /
-  diamond rows + right-aligned descriptions + command chips) / `list` (495 half width, dense rows) /
+- Four `variant`s, all single-image: `full` (830 full width: title / big skills count /
+  rows + right-aligned descriptions + command chips) / `list` (400, compact stacked rows — two pair
+  side by side in a README) /
   `grid` (640 two-column tiles) / `banner` (830 slim strip + short-name pill flow). Fifteen `style`s
   × light/dark `theme`: candy (the site's own neo-brutalist look, listed first in the picker) +
   claude / github / terminal / brutalist / blueprint / neon / editorial / minimal (values from the

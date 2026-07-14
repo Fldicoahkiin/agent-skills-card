@@ -1,10 +1,10 @@
 import type { Template, StyleTokens, ShowcaseConfig } from "../types";
 import { escapeXml, measureMono, truncateToWidth, truncateMono, wrapText, fitMono } from "../svg";
 import { buildInstall } from "../skill";
-import { cardShell, diamond, dominantOwner, installChip, measureFs, shortName, descOf } from "../parts";
+import { cardShell, dominantOwner, installChip, measureFs, shortName, descOf } from "../parts";
 
-// Variant Full: 830, README full width, highest density. Header eyebrow + title / big skills-count number on the right,
-// row = diamond + short name + right-aligned description (≤2 lines) + command chip, legend at the bottom.
+// Variant Full: 830, README full width, highest density. Title + big skills-count number on the right,
+// row = short name + right-aligned description (≤2 lines) + command chip, legend at the bottom.
 // With the terminal style the whole card renders as a terminal window instead (➜ ~ npx skills add …).
 const W = 830;
 const PX = 28;
@@ -19,13 +19,13 @@ export const full: Template = {
     const totalStr = String(config.skills.length).padStart(2, "0");
     const innerW = W - PX * 2;
 
-    // Header block height: eyebrow 10 + gap 8 + title 24.
-    const headerH = 10 + 8 + 26;
+    // Header block height: title only (eyebrow removed).
+    const headerH = 30;
     // Row layout precomputed (row height floats with the description line count).
     const rows = config.skills.map((s) => {
       const label = shortName(s.repo);
       const nameW = Math.ceil(measureMono(label, 13.5));
-      const descW = innerW - 12 - 7 - nameW - 12 - 8;
+      const descW = innerW - nameW - 32;
       const descLines = config.showDesc ? wrapText(descOf(s), measureFs(t, 11.5), Math.max(80, descW), 2) : [];
       const blockH = Math.max(19, descLines.length * 16);
       const rowH = 11 + blockH + (config.showInstall ? 6 + 27 : 0) + 11;
@@ -38,19 +38,16 @@ export const full: Template = {
     const shell = cardShell(t, W, cardH, t.radius);
     const parts: string[] = [shell.svg];
 
-    // Header
+    // Header (title left, big skills count right)
     let y = 26;
     parts.push(
-      `<text x="${PX}" y="${y + 9}" font-family="${t.mono}" font-size="10" font-weight="600" letter-spacing="1.8" fill="${t.faint}">AGENT SKILLS</text>`,
+      `<text x="${PX}" y="${y + 22}" font-family="${t.font}" font-size="24" font-weight="700" letter-spacing="-0.24" fill="${t.ink}">${escapeXml(truncateToWidth(title, measureFs(t, 24), innerW - 120))}</text>`,
     );
     parts.push(
-      `<text x="${PX}" y="${y + 10 + 8 + 20}" font-family="${t.font}" font-size="24" font-weight="700" letter-spacing="-0.24" fill="${t.ink}">${escapeXml(truncateToWidth(title, measureFs(t, 24), innerW - 120))}</text>`,
+      `<text x="${W - PX}" y="${y + 24}" font-family="${t.font}" font-size="32" font-weight="700" fill="${t.accent}" text-anchor="end">${escapeXml(totalStr)}</text>`,
     );
     parts.push(
-      `<text x="${W - PX}" y="${y + 26}" font-family="${t.font}" font-size="32" font-weight="700" fill="${t.accent}" text-anchor="end">${escapeXml(totalStr)}</text>`,
-    );
-    parts.push(
-      `<text x="${W - PX}" y="${y + 26 + 14}" font-family="${t.mono}" font-size="9" letter-spacing="1.8" fill="${t.faint}" text-anchor="end">SKILLS</text>`,
+      `<text x="${W - PX}" y="${y + 24 + 13}" font-family="${t.mono}" font-size="9" letter-spacing="1.8" fill="${t.faint}" text-anchor="end">SKILLS</text>`,
     );
     y += headerH + 16;
 
@@ -59,9 +56,8 @@ export const full: Template = {
       parts.push(`<line x1="${PX - 8}" y1="${y.toFixed(1)}" x2="${W - PX + 8}" y2="${y.toFixed(1)}" stroke="${t.divider}" stroke-width="${t.bw}"/>`);
       const nameCy = y + 11 + 9.5;
       const row: string[] = [];
-      row.push(diamond(t, PX + 3.5, nameCy, 7));
       row.push(
-        `<text x="${PX + 19}" y="${(nameCy + 13.5 * 0.34).toFixed(1)}" font-family="${t.mono}" font-size="13.5" font-weight="600" fill="${t.ink}">${escapeXml(r.label)}</text>`,
+        `<text x="${PX}" y="${(nameCy + 13.5 * 0.34).toFixed(1)}" font-family="${t.mono}" font-size="13.5" font-weight="600" fill="${t.ink}">${escapeXml(r.label)}</text>`,
       );
       // Description: right-aligned, starting on the name's line, at most two lines.
       r.descLines.forEach((ln, k) => {
@@ -70,7 +66,7 @@ export const full: Template = {
         );
       });
       if (config.showInstall) {
-        row.push(installChip(t, buildInstall(config.installTemplate, r.s.repo), PX + 19, y + 11 + r.blockH + 6, innerW - 19, 11, 27).svg);
+        row.push(installChip(t, buildInstall(config.installTemplate, r.s.repo), PX, y + 11 + r.blockH + 6, innerW, 11, 27).svg);
       }
       parts.push(`<a href="https://github.com/${escapeXml(r.s.repo)}" target="_blank">${row.join("")}</a>`);
       y += r.rowH;

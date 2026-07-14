@@ -14,4 +14,4 @@ export const templateList = ALL.map((t) => ({ key: t.key }));
 export const defaultTemplate = full;
 
 // Final image width per variant (used for the HTML embed width attribute).
-export const VARIANT_WIDTH: Record<string, number> = { full: 830, list: 495, grid: 640, banner: 830 };
+export const VARIANT_WIDTH: Record<string, number> = { full: 830, list: 400, grid: 640, banner: 830 };

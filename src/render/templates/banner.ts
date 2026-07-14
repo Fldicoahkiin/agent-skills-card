@@ -2,7 +2,7 @@ import type { Template } from "../types";
 import { escapeXml, measureText, measureMono, truncateToWidth, truncateMono } from "../svg";
 import { cardShell, dominantOwner, measureFs, shortName } from "../parts";
 
-// Variant Banner: 830 slim strip. Left = title + `N agent skills · @owner`; right = short-name pill flow (dot pills),
+// Variant Banner: 830 slim strip. Left = title + `N agent skills · @owner`; right = short-name pill flow,
 // wrapping as needed, right-aligned per line. Lightweight page-top decoration.
 const W = 830;
 const PX = 24;
@@ -25,7 +25,7 @@ export const banner: Template = {
     // Right pill flow: measure widths, greedy line packing.
     const pills = config.skills.map((s) => {
       const label = truncateMono(shortName(s.repo), 11.5, 220);
-      const w = 12 + 6 + 7 + Math.ceil(measureMono(label, 11.5)) + 12;
+      const w = 14 + Math.ceil(measureMono(label, 11.5)) + 14;
       return { repo: s.repo, label, w };
     });
     const flowW = innerW - leftW - 24;
@@ -73,8 +73,7 @@ export const banner: Template = {
         parts.push(
           `<a href="https://github.com/${escapeXml(p.repo)}" target="_blank">` +
             `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${p.w}" height="${PILL_H}" rx="${PILL_H / 2}" fill="none" stroke="${t.divider}" stroke-width="1"/>` +
-            `<circle cx="${(x + 15).toFixed(1)}" cy="${cy.toFixed(1)}" r="3" fill="${t.accent}"/>` +
-            `<text x="${(x + 25).toFixed(1)}" y="${(cy + 11.5 * 0.34).toFixed(1)}" font-family="${t.mono}" font-size="11.5" font-weight="500" fill="${t.ink}">${escapeXml(p.label)}</text>` +
+            `<text x="${(x + 14).toFixed(1)}" y="${(cy + 11.5 * 0.34).toFixed(1)}" font-family="${t.mono}" font-size="11.5" font-weight="500" fill="${t.ink}">${escapeXml(p.label)}</text>` +
             "</a>",
         );
         x += p.w + PILL_GAP;

@@ -17,9 +17,9 @@ describe("buildExportSnippets", () => {
     expect(s?.md).toContain("skills=a%2Fb%2Cc%2Fd");
   });
 
-  it("html: width follows the variant (list=495)", () => {
+  it("html: width follows the variant (list=400)", () => {
     const s = buildExportSnippets({ ...DEFAULTS, variant: "list", skills: [sk("a/b")] }, ORIGIN);
-    expect(s?.html).toContain('width="495"');
+    expect(s?.html).toContain('width="400"');
     expect(s?.html).toContain('<a href="https://x.test/?');
   });
 

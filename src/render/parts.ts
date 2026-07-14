@@ -2,7 +2,7 @@ import type { SkillEntry, StyleTokens } from "./types";
 import { escapeXml, fitMono, measureText } from "./svg";
 import { repoOwner } from "./skill";
 
-// Render atoms shared by all variants: card shell, diamond bullet, install-command chip, count pill.
+// Render atoms shared by all variants: card shell, install-command chip, count pill.
 
 // Card shell: surface + border; brutalist first draws a 6px hard shadow bottom-right, blueprint overlays a grid on the surface.
 // The returned totalW/totalH include the shadow expansion; templates report the image size from them.
@@ -33,12 +33,6 @@ export function cardShell(
     `<rect x="${i}" y="${i}" width="${w - t.bw}" height="${h - t.bw}" rx="${Math.max(0, radius - i)}" fill="none" stroke="${t.border}" stroke-width="${t.bw}"/>`,
   );
   return { svg: parts.join(""), defs, totalW: w + sh, totalH: h + sh };
-}
-
-// Diamond bullet (the draft's 45°-rotated square). `size` is the side length.
-export function diamond(t: StyleTokens, cx: number, cy: number, size: number): string {
-  const half = size / 2;
-  return `<rect x="${(cx - half).toFixed(1)}" y="${(cy - half).toFixed(1)}" width="${size}" height="${size}" fill="${t.accent}" transform="rotate(45 ${cx.toFixed(1)} ${cy.toFixed(1)})"/>`;
 }
 
 // Install-command chip: accentSoft fill + border + command text. No copy icon drawn — a static image
