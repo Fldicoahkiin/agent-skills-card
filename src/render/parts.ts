@@ -41,8 +41,9 @@ export function diamond(t: StyleTokens, cx: number, cy: number, size: number): s
   return `<rect x="${(cx - half).toFixed(1)}" y="${(cy - half).toFixed(1)}" width="${size}" height="${size}" fill="${t.accent}" transform="rotate(45 ${cx.toFixed(1)} ${cy.toFixed(1)})"/>`;
 }
 
-// Install-command chip: accentSoft fill + border + command text. No copy affordance on purpose —
-// the card is a static image in a README, so the chip promises nothing it can't deliver; copying happens on the site.
+// Install-command chip: accentSoft fill + border + command text. No copy icon drawn — a static image
+// in a README can't deliver one. The `data-cmd` attribute is inert there but lets the on-site inline
+// preview turn the chip into a click-to-copy target (see Preview.tsx).
 export function installChip(
   t: StyleTokens,
   cmd: string,
@@ -58,8 +59,10 @@ export function installChip(
   const w = Math.min(maxW, padX * 2 + textW);
   const ty = y + h / 2 + fit.fontSize * 0.34;
   const svg =
+    `<g data-cmd="${escapeXml(cmd)}">` +
     `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${h}" rx="${Math.min(6, t.radiusSm)}" fill="${t.accentSoft}" stroke="${t.border}" stroke-width="1"/>` +
-    `<text x="${(x + padX).toFixed(1)}" y="${ty.toFixed(1)}" font-family="${t.mono}" font-size="${fit.fontSize.toFixed(1)}" fill="${t.accentInk}">${escapeXml(fit.text)}</text>`;
+    `<text x="${(x + padX).toFixed(1)}" y="${ty.toFixed(1)}" font-family="${t.mono}" font-size="${fit.fontSize.toFixed(1)}" fill="${t.accentInk}">${escapeXml(fit.text)}</text>` +
+    "</g>";
   return { svg, w };
 }
 

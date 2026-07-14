@@ -127,7 +127,7 @@ export function App() {
         </aside>
 
         <section className="flex min-w-0 flex-col gap-6">
-          <Preview config={config} />
+          <Preview config={config} onCopy={copyCmd} />
           <CommandList skills={config.skills} installTemplate={config.installTemplate} onCopy={copyCmd} />
           {snippets && <ExportTabs snippets={snippets} />}
         </section>

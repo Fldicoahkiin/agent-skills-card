@@ -4,7 +4,7 @@ import { buildInstall } from "../skill";
 import { cardShell, diamond, installChip, countPill, measureFs, shortName } from "../parts";
 
 // Variant List: 495 half width, dense single-line rows. Header = title + count pill; row = diamond + short name + command chip on the right.
-// Sized to sit beside stats-style cards in a README. No footer credit line (half width is precious).
+// Compact half-width, dense rows. No footer credit line (half width is precious).
 const W = 495;
 const PX = 20;
 const ROW_H = 33;
